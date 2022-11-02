@@ -3,7 +3,8 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
-    
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,9 +22,8 @@ Route::get('/', function () {
 
 
 Route::group(['middleware'=>['auth']], function(){
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard',[PostController::class,'dashboard'
+    ])->name('dashboard');
 
 Route::resource('categories',CategoryController::class,);
 Route::resource('posts',PostController::class);
