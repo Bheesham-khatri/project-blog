@@ -6,6 +6,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\Console\Input\Input;
 
 class PostController extends Controller
@@ -16,10 +17,18 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        $posts = Post::with('category')->paginate(3);
-
-        return view('posts.index', compact('posts'));
+    {  
+        
+        if(auth()->user()->is_admin==1){
+            $posts = Post::with('category')->paginate(5);
+            return view('posts.index', compact('posts'));
+        }else {
+            
+            $posts = Post::where('user_id',auth()->user()->id)->with('category')->paginate(5);
+            return view('posts.index', compact('posts'));
+        }
+    
+        
     }
 
     /**
@@ -53,6 +62,7 @@ class PostController extends Controller
             'post_text' => $request->input('post_text'),
             'category_id' => $request->input('category_id'),
             'image'=>$imageName,
+            'user_id' => Auth::id(),
 
 
         ]);
