@@ -29,11 +29,10 @@
                                 <input type="text" name="title" placeholder="Post Title" class="form-control" value="{{ $post->title }}">
                                 <br>
                                 <label class="form-label" for="post_text"><b>Post Description :</b></label>
-                                <textarea name="post_text" class="form-control" value="{{$post->post_text }}" cols="30" rows="10">
-                                    {{$post->post_text }}</textarea>
+                                <textarea name="post_text" class="form-control" value="{{$post->post_text }}" cols="30" rows="10">{{$post->post_text}}</textarea>
                                 <br>
                                 <label class="form-label" for="image"><b>Upload Image:</b></label>
-                                <input type="file" name="image" class="form-control">
+                                <input type="file" name="image" class="form-control" value="{{$post->image}}">
                                   <img src="/storage/{{$post->image}}" width="150px">
                                 <br>
                                 <label class="form-label" for="category"><b>Category:</b></label>

@@ -37,7 +37,7 @@
                                 <input type="text" name="title" placeholder="Post Title" class="form-control" >
                                 <br>
                                 <label class="form-label" for="post_text"><b>Post Description :</b></label>
-                                <textarea name="post_text" class="form-control"cols="30" rows="10"></textarea>
+                                <textarea name="post_text" class="form-control" cols="30" rows="10" ></textarea>
                                 <br>
                                 <label class="form-label" for="image"><b>Upload Image:</b></label>
                                 <input type="file" name="image" class="form-control" >

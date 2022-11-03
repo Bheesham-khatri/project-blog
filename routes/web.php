@@ -24,14 +24,11 @@ Route::get('/', function () {
 Route::group(['middleware'=>['auth']], function(){
     Route::get('/dashboard',[PostController::class,'dashboard'
     ])->name('dashboard');
-
-Route::resource('categories',CategoryController::class,)->middleware('is_admin');
-Route::resource('posts',PostController::class);
-
+    
+        Route::resource('categories',CategoryController::class,)->middleware('is_admin');
+        Route::resource('posts',PostController::class);
 
 });
-
-
 
 
 require __DIR__.'/auth.php';
