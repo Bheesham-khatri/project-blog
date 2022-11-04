@@ -7,7 +7,9 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 
 class PostController extends Controller
@@ -30,6 +32,7 @@ class PostController extends Controller
         // }
     
         
+
     }
 
     /**
@@ -124,17 +127,42 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+
+    public function destroy($id)
     {
-        $post->delete();
-
-        return redirect()->route('posts.index');
+        
+        $posts = Post::findorfail($id);
+            $posts->delete();
+             return response()->json(['success'=>'Data is successfully updated']);
+        
     }
 
-    public function dashboard(){
 
-            $posts = Post::with('user')->paginate(5);
-
-            return view('dashboard', compact('posts'));
+    public function dashboard(Request $request){
+     
+        if ($request->ajax()) {
+            $posts = Post::with('category','user')->get();
+            return Datatables::of($posts)
+            ->addIndexColumn()
+            ->addColumn('action', function($posts){
+                if(auth()->user()->is_admin){
+                 
+                    $actionBtn = '<button type="button" name="edit" id="'.$posts->id.'" class="edit btn btn-primary btn-sm"> <i class="bi bi-pencil-square"></i>Edit</button>';
+                    $actionBtn = $actionBtn. '<button type="button" name="edit" id="'.$posts->id.'" class="delete btn btn-danger btn-sm"> <i class="bi bi-backspace-reverse-fill"></i> Delete</button>';
+                    return $actionBtn;
+             }
+            })
+          
+            
+            ->addColumn('image', function ($posts) { 
+                return '<img src="'.url('storage/'.$posts->image).'" width="65px" class="img-circle" />';
+           })
+            ->rawColumns(['action','image'])
+            ->make(true);
+        }
+    
+        return view('dashboard');
     }
+
+  
 }

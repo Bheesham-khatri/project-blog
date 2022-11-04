@@ -1,88 +1,172 @@
 <x-app-layout>
-    <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Post</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
-        <style>
-            #post {
-                margin-top: 10px;
-            }
-        </style>
-    </head>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Laravel Yajra Datatable</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
+    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
+
+    <style>
+
+        #add{
+            margin-bottom: 3%;
+            text-align: right;
+        }
+        .mb-4{
+            color: grey;
+             font-family : lobster;
+             font-weight: bold;
+             font-size: 50px;
+        }
+
+        #table_1{
+            background-color: grey;
+        }
+        #table_1 thead tr th{
+            
+            color: whitesmoke;
+        }
+
+
+    </style>
+</head>
     <body>
 
-        <div class="container">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                @if(auth()->user()->is_admin)
-                <h1>Welcome to Admin Panel</h1>
-                @else
-                <h1>Welcome to User Panel</h1>
 
-                @endif
-            </h2>
-            <div class="row" id="post">
-                <div class="col-sm-12  mx-auto">
-                    <h1 class="text-light text-center bg-secondary"><b>Dashboard</b></h1>
+            <div class="container mt-5">
+            <h2 class="mb-4" align="center">Dashboard</h2>
+            @if(auth()->user()->is_admin)
+                <h1>Wellcome to Admin Panel</h1>
+                @else
+                <h1>Wellcome to User Panel</h1>
+            @endif
+             <!-- Form Header -->
+         
+            <table class="table table-bordered yajra-datatable" id="table_1">
+            <span id="form_result"></span>
+                <thead>
+                <tr>
+
+                        <th><b>#</b></th>
+                        <th><b>Post Title</b></th>
+                        <th><b>Post Description</b></th>
+                        <th><b>Post Category</b></th>
+                        <th><b>Posted By</b></th>
+                        <th><b>Image</b></th>
+                        <th id="action"><b>Action</b></th>
+                        
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                    <div class="modal-content">
+                    <form method="POST" id="sample_form" class="form-horizontal">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="ModalLabel">Confirmation..</h5>
+                        </div>
+                        <div class="modal-body">
+                            <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">YES</button>
+                        <button type="button"  name="close_btn" data-dismiss="modal"  id="close_btn" class="btn btn-secondary">
+                            Close
+                        </button>
+
+                        </div>
+                    </form>
+                    </div>
+                    </div>
                 </div>
             </div>
-            <br>
-            <br>
-      
-            <table class="table table-bordered mx-auto table-striped table-hover bg-secoundry text-black ">
-                <tr>
-
-                    <th><b>#</b></th>
-                    <th><b>Post Title</b></th>
-                    <th><b>Post Description</b></th>
-                    <th><b>Post Category</b></th>
-                    <th><b>Posted By</b></th>
-                    <th><b>Image</b></th>
-                    @if(auth()->user()->is_admin)
-                    <th><b>Action</b></th>
-                    @endif
 
 
-                </tr>
-
-                @foreach($posts as $post)
-
-                <tr>
-                    <td class="col-sm-1.5">{{$post->id}}</td>
-                    <td class="col-sm-1.5">{{$post->title}}</td>
-                    <td class="col-sm-5">{{$post->post_text}}</td>
-                    <td class="col-sm-1.5">{{$post->category->name}}</td>
-                    <td class="col-sm-1.5">{{$post->user->name}}</td>
-
-                    <td><img width="80px" class="img-circle" src="{{URL::asset('storage/'.$post->image) }}"></td>
-                    @if(auth()->user()->is_admin)
-                    <td>
-                        <a href="{{ route('posts.edit', $post) }}" class="btn btn-primary btn-sm">Edit</a>
-                        <form action="{{ route('posts.destroy', $post) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <input type="submit" value="Delete" class="btn btn-danger" onclick="return confirm('Are You Sure')">
-                        </form>
-                    </td>
-                    @endif
-                </tr>
-
-                @endforeach
-
-            </table>
-        </div>
-        </div>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script> -->
     </body>
 
-    </html>
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+
+        <script type="text/javascript">
+
+
+            // Fecthing yajra DataTable
+        $(document).ready(function() {
+            var table= $('.yajra-datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('dashboard') }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'title', name: 'title'},
+                    {data: 'post_text', name: 'post_text'},
+                    {data: 'category.name', name: 'category'},
+                    {data: 'user.name', name: 'user'},
+                    {data: 'image', name: 'image'},
+                
+                    {data: 'action', 
+                        name: 'action', 
+                        orderable: false, 
+                        searchable: false},
+                ]
+            });
+                                if($('#action').val() === 'auth->user->is_admin')
+                                    {
+                                        $('#action').show();
+                                    }
+                                    else{
+                                        $('#action').hide();
+                                    }
+
+                //    Delete Record using id
+                var data_id;
+                   
+                   $(document).on('click', '.delete', function(){
+                   data_id = $(this).attr('id');
+                   $('.modal-title').text('Confirmation..');
+                   $('#confirmModal').modal('show');
+                   $('#form_result').val('Data Deleted Succesfully');
+                   });
+                
+                   $('#ok_button').click(function(){
+                   $.ajax({
+                    type: "DELETE",
+                    url: "posts"+'/'+data_id,
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                       beforeSend:function(){
+                           $('#ok_button').text('Deleting...');
+                       },
+                       success:function(data)
+                       {
+
+                           $('#confirmModal').modal('hide');
+                           $('.yajra-datatable').DataTable().ajax.reload();
+                           $('#ok_button').text('YES');
+                          
+                       }
+
+                   })
+                   });
+        
+        });
+        
+</script>
+</html>
 </x-app-layout>
