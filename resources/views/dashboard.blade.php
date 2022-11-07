@@ -40,9 +40,13 @@
             <div class="container mt-5">
             <h2 class="mb-4" align="center">Dashboard</h2>
             @if(auth()->user()->is_admin)
-                <h1>Wellcome to Admin Panel</h1>
+                <h1>Welcome to Admin Panel</h1>
+                <br>
+                <br>
                 @else
-                <h1>Wellcome to User Panel</h1>
+                <h1>Welcome to User Panel</h1>
+                <br>
+                <br>
             @endif
              <!-- Form Header -->
          
@@ -57,8 +61,9 @@
                         <th><b>Post Category</b></th>
                         <th><b>Posted By</b></th>
                         <th><b>Image</b></th>
-                        <th id="action"><b>Action</b></th>
-                        
+                        @if(auth()->user()->is_admin)
+                        <th class="action"><b>Action</b></th>
+                    @endif
                 </tr>
                 </thead>
                 <tbody>
@@ -75,7 +80,7 @@
                             <h5 class="modal-title" id="ModalLabel">Confirmation..</h5>
                         </div>
                         <div class="modal-body">
-                            <h4 align="center" style="margin:0;">Are you sure you want to remove this data?</h4>
+                            <h4 align="center" style="margin:0;">Are you sure you want to remove this post?</h4>
                         </div>
                         <div class="modal-footer">
                         <button type="button" name="ok_button" id="ok_button" class="btn btn-danger">YES</button>
@@ -109,7 +114,26 @@
 
             // Fecthing yajra DataTable
         $(document).ready(function() {
-            var table= $('.yajra-datatable').DataTable({
+            var id = {{auth()->user()->is_admin}};
+            if(id==false)
+            {
+                var table= $('.yajra-datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('dashboard') }}",
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'title', name: 'title'},
+                    {data: 'post_text', name: 'post_text'},
+                    {data: 'category.name', name: 'category'},
+                    {data: 'user.name', name: 'user'},
+                    {data: 'image', name: 'image'},
+                
+                ]
+            });
+            }
+            else{
+                var table= $('.yajra-datatable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('dashboard') }}",
@@ -127,12 +151,15 @@
                         searchable: false},
                 ]
             });
-                                if($('#action').val() === 'auth->user->is_admin')
+            }
+           
+                                if($('.action').val() == 'auth->user->is_admin')
                                     {
-                                        $('#action').show();
+                                        $('.action').hide();
                                     }
                                     else{
-                                        $('#action').hide();
+                                        
+                                        $('.action').show();
                                     }
 
                 //    Delete Record using id

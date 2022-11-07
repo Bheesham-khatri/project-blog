@@ -145,7 +145,7 @@ class PostController extends Controller
             return Datatables::of($posts)
             ->addIndexColumn()
             ->addColumn('action', function($posts){
-                if(auth()->user()->is_admin){
+              if(auth()->user()->is_admin){
                  
                     $actionBtn = '<button type="button" name="edit" id="'.$posts->id.'" class="edit btn btn-primary btn-sm"> <i class="bi bi-pencil-square"></i>Edit</button>';
                     $actionBtn = $actionBtn. '<button type="button" name="edit" id="'.$posts->id.'" class="delete btn btn-danger btn-sm"> <i class="bi bi-backspace-reverse-fill"></i> Delete</button>';
