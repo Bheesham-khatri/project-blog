@@ -55,7 +55,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-      
+        
         $imageName = time().'.'.request()->image->getClientOriginalExtension();
         $input['image'] = $imageName;
         request()->image->move(public_path('storage'), $imageName);
@@ -74,65 +74,45 @@ class PostController extends Controller
         return redirect()->route('posts.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Post $post)
-    {
-        //
+    public function edit($id)
+    {  
+        if(request()->ajax())
+        {
+            $data = Post::where('id',$id)->with('category','user')->firstOrFail();
+            return response()->json(['result' => $data]);
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
-    {
-        $categories = Category::all();
-
-        return view('posts.edit', compact('post', 'categories'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Post $post)
-
-    {
-        $imageName = time().'.'.request()->image->getClientOriginalExtension();
-        $input['image'] = $imageName;
-        request()->image->move(public_path('storage'), $imageName);
-        $post->update([
+    public function update(Request $request , $id)
+    {  
+        
+        $post = Post::where('id',$id)->with('category','user');
+        $imageName="";
+        if(request()->ajax()){
+          if(request()->hasFile('image')){
+            $imageName = time().'.'.$request->image->getClientOriginalExtension();
+            $input['image'] = $imageName;
+            request()->image->move(public_path('storage/'), $imageName);
+          }
+       
+            $post->update([
             'title' => $request->input('title'),
             'post_text' => $request->input('post_text'),
-            'category_id' => $request->input('category_id'),
             'image'=>$imageName,
-        ]);
-
-        return redirect()->route('posts.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
+            'user_id' => Auth::id(),
+        
+              ]);
+        
+         return response()->json(['success'=>'Data is successfully updated']);
+        }
+}
+    
 
     public function destroy($id)
     {
         
-        $posts = Post::findorfail($id);
-            $posts->delete();
+             $posts = Post::findorfail($id);
+              $posts->delete();
              return response()->json(['success'=>'Data is successfully updated']);
         
     }
