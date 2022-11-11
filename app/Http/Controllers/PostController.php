@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Input\Input;
 
+
 class PostController extends Controller
 {
     /**
@@ -19,18 +20,29 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {  
-        
-        // if(auth()->user()->is_admin==1){
-        //     $posts = Post::with('category')->paginate(5);
-        //     return view('posts.index', compact('posts'));
-        // }else {
+           
+        $category = Category::all();
+
+        if ($request->ajax()) {
+                $posts =Post::where('user_id',auth()->user()->id)->with('category')->get();
+                return Datatables::of($posts)
+                ->addIndexColumn()
+                ->addColumn('action', function($posts){
+                    $actionBtn = '<button type="button" name="edit" id="'.$posts->id.'" class="edit btn btn-primary btn-sm"> <i class="bi bi-pencil-square"></i>Edit</button>';
+                        $actionBtn = $actionBtn. '<button type="button" name="edit" id="'.$posts->id.'" class="delete btn btn-danger btn-sm"> <i class="bi bi-backspace-reverse-fill"></i> Delete</button>';
+                        return $actionBtn;
+                 
+                })
+                ->addColumn('image', function ($posts) { 
+                    return '<img src="'.url('storage/'.$posts->image).'" width="65px" class="img-circle" />';
+               })
+                ->rawColumns(['action','image'])
+                ->make(true);
+            }
             
-            $posts = Post::where('user_id',auth()->user()->id)->with('category')->paginate(5);
-            return view('posts.index', compact('posts'));
-        // }
-    
+            return view('posts.index',compact('category'));
         
 
     }
@@ -41,7 +53,8 @@ class PostController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
+    {   
+        
         $categories = Category::all();
 
         return view('posts.create', compact('categories'));
@@ -55,7 +68,8 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        
+
+       
         $imageName = time().'.'.request()->image->getClientOriginalExtension();
         $input['image'] = $imageName;
         request()->image->move(public_path('storage'), $imageName);
@@ -64,18 +78,19 @@ class PostController extends Controller
         Post::create([
             'title' => $request->input('title'),
             'post_text' => $request->input('post_text'),
-            'category_id' => $request->input('category_id'),
+            'category_id'=>$request->category_id,
             'image'=>$imageName,
             'user_id' => Auth::id(),
 
 
         ]);
-
-        return redirect()->route('posts.index');
+        return response()->json(['success'=>'Data is successfully Added']);
+        // return redirect()->route('posts.index');
     }
 
     public function edit($id)
     {  
+        
         if(request()->ajax())
         {
             $data = Post::where('id',$id)->with('category','user')->firstOrFail();
@@ -85,7 +100,7 @@ class PostController extends Controller
 
     public function update(Request $request , $id)
     {  
-        
+            
         $post = Post::where('id',$id)->with('category','user');
         $imageName="";
         if(request()->ajax()){
@@ -93,12 +108,21 @@ class PostController extends Controller
             $imageName = time().'.'.$request->image->getClientOriginalExtension();
             $input['image'] = $imageName;
             request()->image->move(public_path('storage/'), $imageName);
+            $post->update([
+                'title' => $request->input('title'),
+                'post_text' => $request->input('post_text'),
+                'image'=>$imageName,
+                "category_id"=>$request->Category,
+                'user_id' => Auth::id(),
+            
+                  ]);
           }
-       
+            else{
+            }
             $post->update([
             'title' => $request->input('title'),
             'post_text' => $request->input('post_text'),
-            'image'=>$imageName,
+            "category_id"=>$request->Add_Category,
             'user_id' => Auth::id(),
         
               ]);
@@ -119,7 +143,9 @@ class PostController extends Controller
 
 
     public function dashboard(Request $request){
-     
+
+        
+        $category = Category::all();
         if ($request->ajax()) {
             $posts = Post::with('category','user')->get();
             return Datatables::of($posts)
@@ -140,8 +166,8 @@ class PostController extends Controller
             ->rawColumns(['action','image'])
             ->make(true);
         }
-    
-        return view('dashboard');
+           
+        return view('dashboard',compact('category'));
     }
 
   

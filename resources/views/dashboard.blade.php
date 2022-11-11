@@ -41,8 +41,7 @@
 
     
             <div class="container mt-5">
-            <h2 class="mb-4" align="center">Dashboard</h2>
-            @if(auth()->user()->is_admin)
+                @if(auth()->user()->is_admin)
                 <h1>Welcome to Admin Panel</h1>
                 <br>
                 <br>
@@ -50,7 +49,8 @@
                 <h1>Welcome to User Panel</h1>
                 <br>
                 <br>
-            @endif
+                @endif
+                <h2 class="mb-4" align="center">Dashboard</h2>
              <!-- Form Header -->
          
             <table class="table table-bordered yajra-datatable" id="table_1">
@@ -100,7 +100,14 @@
                             </div>
                             <div class="form-group">
                                 <label>Post Category : </label>
-                                <input type="text" name="Category" id="Category" class="form-control" />
+                                <select name="Category" id="Category" class="form-control">
+                                    @foreach($category as $post)
+                                    <option value="{{$post->id}}">
+                                               {{$post->name}}         
+                                    </option>
+                                    @endforeach
+                                </select>
+                                
                             </div>
                             <div class="form-group">
                                 <label>Post Image  : </label>
