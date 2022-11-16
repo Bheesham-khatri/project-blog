@@ -102,7 +102,7 @@
                                 <option id="category_id">Select Category</option>
                                     @foreach($category as $post)
                                     
-                                    <option id="category_id" value="{{$post->id}}">
+                                    <option id="Add_Category" value="{{$post->id}}">
                                                {{$post->name}}         
                                     </option>
                                     @endforeach
@@ -156,7 +156,7 @@
                             </div>
                             <div class="form-group">
                                 <label>Post Category : </label>
-                                <select name="Category" id="Category" class="form-control">
+                                <select name="Add_Category" id="Add_Category" class="form-control">
                                     @foreach($category as $post)
                                     <option value="{{$post->id}}">
                                                {{$post->name}}         
@@ -315,7 +315,7 @@
                                console.log(data);
                                 $('#title').val(data.result.title);
                                 $('#post_text').val(data.result.post_text);
-                                $('#Category').val(data.result.category.name);
+                                $('#Add_Category').val(data.result.category.name);
                                 $("#img").attr("src", 'storage/'+data.result.image);
                                 $('#hidden_id').val(id);
                                 $('#Edit_action').val('Edit');

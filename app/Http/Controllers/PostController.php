@@ -112,7 +112,7 @@ class PostController extends Controller
                 'title' => $request->input('title'),
                 'post_text' => $request->input('post_text'),
                 'image'=>$imageName,
-                "category_id"=>$request->Category,
+                "category_id"=>$request->Add_Category,
                 'user_id' => Auth::id(),
             
                   ]);
