@@ -28,6 +28,7 @@ class StorePostRequest extends FormRequest
             'title'=> 'required',
             'post_text'=> 'required',
             'category_id'=> 'required',
+            'user_id'=>'required',
             'image' => ['required','image','mimes:jpeg,png,jpg,gif,svg','max:2048'
             ,'dimensions:min_width=100,min_height=100,max_width=1000,max_height=1000']
         ];
