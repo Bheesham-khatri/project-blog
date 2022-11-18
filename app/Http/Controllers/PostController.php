@@ -65,7 +65,7 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-            // dd($request);
+        
         try {
 
             $imageName = $this->saveImageForProduct($request->image);
@@ -82,7 +82,6 @@ class PostController extends Controller
             return $e;
         }
 
-        // return redirect()->route('posts.index');
     }
 
     public function edit($id)
@@ -99,7 +98,6 @@ class PostController extends Controller
     {
 
         
-        // $post =Post::where('id', $id)->with('Category', 'user')->get();
        
         $imageName = null;
         if (request()->ajax()) {
@@ -108,8 +106,6 @@ class PostController extends Controller
                 $imageName= $this->saveImageForProduct($request->image);
             }
           
-            
-            // dd($request->image);
                 $post->update([
                     'title' => $request->input('title'),
                     'post_text' => $request->input('post_text'),
@@ -119,8 +115,7 @@ class PostController extends Controller
                     
                 ]);
 
-                // return $post;
-                
+
                 return response()->json(['success' => 'Data is successfully updated']);
         }
     }
@@ -164,7 +159,7 @@ class PostController extends Controller
         return view('dashboard', compact('category'));
     }
 
-    public function saveImageForProduct($requestImage)
+    public function saveImageForProduct($requestImage):string
     {
         $imageName = time() . '.' . $requestImage->getClientOriginalExtension();
         $input['image'] = $imageName;
